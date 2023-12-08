@@ -26,6 +26,9 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+This project is a simple microservice that would do some continued job like subscribe for ctypto market cources and store them to the DB.
+It will be abl to receive requests for current cource of a currency and send back the result.
+
 ## Installation
 
 ```bash
