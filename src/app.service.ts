@@ -4,6 +4,7 @@ import {
   OnApplicationShutdown,
 } from '@nestjs/common';
 import * as WebSocketClient from 'websocket';
+import { Argument, Result } from './types';
 
 @Injectable()
 export class AppService
@@ -25,25 +26,6 @@ export class AppService
     this.wsClient.on('connect', (connection) => this.onConnect(connection));
     console.log('...bootstrapped');
     //this.connectToBybit();
-  }
-
-  disconnectFromBybit() {
-    this.connection.close();
-    this.connection = null;
-  }
-
-  reconnectBybit() {
-    if (this.connection?.connected) {
-      this.connection.close();
-      this.connection = null;
-    }
-    setTimeout(() => {
-      this.connectToBybit();
-    }, 1000);
-  }
-
-  connectToBybit() {
-    this.wsClient.connect('wss://stream.bybit.com/contract/usdt/public/v3');
   }
 
   private onConnect(connection: WebSocketClient.connection) {
@@ -86,13 +68,32 @@ export class AppService
     }
   }
 
-  async getSum(data: number[]): Promise<number> {
-    const result = data.reduce((sum, item) => sum + item, 0);
-    return result;
+  getSum(data: Argument): Result {
+    const result = data.argument.reduce((sum, item) => sum + item, 0);
+    return { result };
   }
 
-  async getMult(data: number[]): Promise<number> {
-    const result = data.reduce((sum, item) => sum * item, 1);
-    return result;
+  getMult(data: Argument): Result {
+    const result = data.argument.reduce((sum, item) => sum * item, 1);
+    return { result };
+  }
+
+  disconnectFromBybit() {
+    this.connection.close();
+    this.connection = null;
+  }
+
+  reconnectBybit() {
+    if (this.connection?.connected) {
+      this.connection.close();
+      this.connection = null;
+    }
+    setTimeout(() => {
+      this.connectToBybit();
+    }, 1000);
+  }
+
+  connectToBybit() {
+    this.wsClient.connect('wss://stream.bybit.com/contract/usdt/public/v3');
   }
 }

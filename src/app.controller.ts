@@ -1,38 +1,42 @@
 import { Controller } from '@nestjs/common';
 import { AppService } from './app.service';
-import { EventPattern, MessagePattern } from '@nestjs/microservices';
+import { GrpcMethod } from '@nestjs/microservices';
+import { Argument, Result, ResultOperation } from './types';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @MessagePattern({ cmd: 'sum' })
-  async accumulate(data: number[]): Promise<number> {
+  @GrpcMethod('MathService', 'Accumulate')
+  accumulate(data: Argument): Result {
     console.log('calculating sum...');
     return this.appService.getSum(data);
   }
 
-  @MessagePattern({ cmd: 'mult' })
-  async multipry(data: number[]): Promise<number> {
+  @GrpcMethod('MathService', 'Multiply')
+  multiply(data: Argument): Result {
     console.log('calculating mult...');
     return this.appService.getMult(data);
   }
 
-  @EventPattern('event_connect')
-  async connectBybit(): Promise<void> {
+  @GrpcMethod('MathService', 'ConnectBybit')
+  connectBybit(): ResultOperation {
     console.log('connecting...');
     this.appService.connectToBybit();
+    return { success: true };
   }
 
-  @EventPattern('event_disconnect')
-  async disconnectBybit(): Promise<void> {
+  @GrpcMethod('MathService', 'DisconnectBybit')
+  disconnectBybit(): ResultOperation {
     console.log('disconnecting...');
     this.appService.disconnectFromBybit();
+    return { success: true };
   }
 
-  @EventPattern('event_reconnect')
-  async reconnectBybit(): Promise<void> {
+  @GrpcMethod('MathService', 'ReconnectBybit')
+  reconnectBybit(): ResultOperation {
     console.log('reconnecting...');
     this.appService.reconnectBybit();
+    return { success: true };
   }
 }
